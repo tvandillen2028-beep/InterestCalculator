@@ -1,0 +1,69 @@
+import java.util.Scanner;
+import java.text.NumberFormat;
+import java.util.Locale;
+
+/**
+ * Main application for the loan repayment calculator.
+ */
+public class Main {
+
+    public static void main(String[] args) {
+
+        // Create a Scanner to read user input.
+        Scanner input = new Scanner(System.in);
+
+        // Use currency and percentage formatting.
+        NumberFormat currency =
+                NumberFormat.getCurrencyInstance(Locale.US);
+
+        NumberFormat percentage =
+                NumberFormat.getPercentInstance(Locale.US);
+
+        percentage.setMinimumFractionDigits(2);
+        percentage.setMaximumFractionDigits(2);
+
+        // Ask the user for the loan amount.
+        System.out.print("Enter the loan amount: ");
+        double amount = input.nextDouble();
+
+        // Ask how many months are allowed for repayment.
+        System.out.print("Enter the repayment period in months: ");
+        int months = input.nextInt();
+
+        // Validate the user input.
+        if (amount <= 0 || months <= 0) {
+            System.out.println(
+                    "Amount and months must both be greater than zero."
+            );
+            input.close();
+            return;
+        }
+
+        // Create the calculator black box.
+        InterestRateCalculator calculator =
+                new InterestRateCalculator(amount, months);
+
+        // Calculate the monthly payment.
+        double monthlyPayment =
+                calculator.calculateMonthlyPayment();
+
+        // Calculate the total amount repaid.
+        double totalRepaid = monthlyPayment * months;
+
+        // Display the results.
+        System.out.println("\n--- Loan Repayment Summary ---");
+        System.out.println("Loan amount: "
+                + currency.format(amount));
+        System.out.println("Annual interest rate: "
+                + percentage.format(InterestRateCalculator.RATE));
+        System.out.println("Repayment period: "
+                + months + " months");
+        System.out.println("Monthly payment: "
+                + currency.format(monthlyPayment));
+        System.out.println("Total amount repaid: "
+                + currency.format(totalRepaid));
+
+        // Close the Scanner.
+        input.close();
+    }
+}
